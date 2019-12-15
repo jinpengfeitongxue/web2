@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>轮播图作业</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="animate.js"></script>
+</head>
+<body>
+	<div class="prompt">
+		<img src="images/a15.png" id="lb">
+		<div class="point" id="point">
+			<p class="p1" id="p1">[温习提示]：最近有不少不法分子在网上骗人，请大家注意！！！</p>
+		</div>
+	</div>
+	<div class="box" id="box">
+		<ul class="slider" id="slider">
+			<li class="slide"><img src="images/b5.png"></li>
+			<li class="slide"><img src="images/b1.png"></li>
+			<li class="slide"><img src="images/b2.png"></li>
+			<li class="slide"><img src="images/b3.png"></li>
+			<li class="slide"><img src="images/b4.png"></li>
+			<li class="slide"><img src="images/b5.png"></li>
+			<li class="slide"><img src="images/b1.png"></li>
+		</ul>
+		<span id="left"><</span>
+		<span id="right">></span>
+		<ul class="nav" id="nav">
+			<li class="active">1</li>
+			<li>2</li>
+			<li>3</li>
+			<li>4</li>
+			<li>5</li>
+		</ul>
+	</div>
+	<script>
+	//滑动提醒
+	var p1 = document.getElementById("p1");
+	setInterval(function(){
+		var now = parseInt(getStyle(p1,"left"));
+		if(now == -290){
+			p1.style.left = 1000 + "px";
+			now = 1000;
+		}else{
+			console.log(now);
+			p1.style.left=now - 10 + "px";
+		}
+	},200);
+	//轮播图
+	var box = document.getElementById("box"); 
+	var slider = document.getElementById("slider");
+	var nav = document.getElementById("nav").children;
+	var previous = document.getElementById("left");
+	var next = document.getElementById("right");
+	var i = 1;
+	var isMoving = false;
+	function toNext(){
+		if(isMoving == false){
+			isMoving = true;
+			i++;
+			colorChange();
+			animate(slider,{left:-1200*i},function(){
+				if(i==6){
+					slider.style.left="-1200px";
+					i = 1;
+				}
+				isMoving = false;
+			});
+		}
+	}
+	function toPrevious(){
+		if(isMoving){
+			return;
+		}
+		isMoving = true;
+		i--;
+		colorChange();
+		animate(slider,{left:-1200*i}, function(){
+			if(i==0){
+				slider.style.left="-6000px";
+				i = 5;
+			}	
+			isMoving = false;
+		})
+	}
+	var timer = setInterval(toNext, 3000);
+	//鼠标滑入事件
+	box.onmousemove=function() {
+		animate(next,{opacity:50});
+		animate(previous,{opacity:50});
+		clearInterval(timer);
+	};
+	//鼠标划出事件
+	box.onmouseout=function() {
+		animate(next,{opacity:0});
+		animate(previous,{opacity:0});
+		timer = setInterval(toNext,3000);
+	};
+	//左右切换
+	next.onclick = toNext;
+	previous.onclick = toPrevious;
+	//小按钮点击事件
+	for(var a=0;a<nav.length;a++){
+		nav[a].num = a; 
+		nav[a].onclick = function(){
+			i = this.num + 1;
+			colorChange();
+			animate(slider,{left:-1200*i});
+		}
+	}
+	//小按钮背景色
+	function colorChange(){
+		for(a=0;a<nav.length;a++){
+			nav[a].className = '';
+		}
+		if(i==6){
+			nav[0].className = 'active';
+		}else if(i==0){
+			nav[4].className = 'active'; 
+		}else{
+			nav[i-1].className = 'active';
+		}
+	}
+	</script>
+</body>
+
+</html>
